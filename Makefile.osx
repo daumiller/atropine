@@ -1,0 +1,24 @@
+all : macos
+
+macos : testMacOS_0
+
+testMacOS_0 : testMacOS_0.m libatropine.dylib
+	clang testMacOS_0.m -o testMacOS_0.bin -L./ -framework Cocoa -latropine `objfw-config --all`
+	cp testMacOS_0.bin testMacOS_0.app/Contents/MacOS/testMacOS_0
+	cp libatropine.dylib testMacOS_0.app/Contents/Frameworks/libatropine.dylib
+	install_name_tool -change libatropine.dylib @executable_path/../Frameworks/libatropine.dylib testMacOS_0.app/Contents/MacOS/testMacOS_0
+
+libatropine.dylib : objects
+	clang -dynamiclib *.o -o libatropine.dylib /Users/dillon/Development/builds/cairo/_bin/lib/*.a /Users/dillon/Development/builds/cairo/_bin/lib/pango/1.6.0/modules/pango-basic-coretext.a -L/usr/X11/lib -lz -lfreetype -framework Cocoa -liconv -lffi `objfw-config --libs`
+
+objects : OMColor.o OMCoordinate.o OMRectangle.o OMFont.o OMFontNotFoundException.o OMTextLayout.o OMSurface.o OMBufferSurface.o OMNativeSurface.o
+
+%.o : %.m
+	clang -c $^ -o $@ -I/Users/dillon/Development/builds/cairo/_bin/include -I/Users/dillon/Development/builds/cairo/_bin/include/cairo `objfw-config --cppflags --objcflags`
+
+clean :
+	rm -f *.o
+	rm -f *.dylib
+	rm -f *.bin
+	rm -f testMacOS_0.app/Contents/Frameworks/libatropine.dylib
+	rm -f testMacOS_0.app/Contents/MacOS/testMacOS_0

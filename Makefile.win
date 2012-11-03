@@ -1,0 +1,19 @@
+all : win32
+
+win32 : testWin32_0.exe
+
+testWin32_0.exe : testWin32_0.m atropine.dll
+	clang testWin32_0.m -o testWin32_0.exe -mwindows atropine.dll `objfw-config --all`
+
+atropine.dll : objects
+	clang -shared *.o -o atropine.dll `objfw-config --libs` `pkg-config --libs gtk+-2.0`
+
+objects : OMColor.o OMCoordinate.o OMRectangle.o OMFont.o OMFontNotFoundException.o OMTextLayout.o OMSurface.o OMBufferSurface.o OMNativeSurface.o
+
+%.o : %.m
+	clang -c $^ -o $@ `objfw-config --cppflags --objcflags` `pkg-config --cflags gtk+-2.0`
+
+clean :
+	rm -f *.o
+	rm -f *.exe
+	rm -f *.dll

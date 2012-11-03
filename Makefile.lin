@@ -1,0 +1,21 @@
+all : linux
+
+linux : testLinux_0.bin
+
+testLinux_0.bin : testLinux_0.m libatropine.so
+	gcc testLinux_0.m -o testLinux_0.bin -L./ -latropine -Wl,-R./ `objfw-config --all` `pkg-config --cflags gtk+-2.0 --libs gtk+-2.0`
+
+libatropine.so : objects
+	gcc -shared *.o -o libatropine.so `objfw-config --libs` `pkg-config --libs gtk+-2.0`
+
+objects : OMColor.o OMCoordinate.o OMRectangle.o OMFont.o OMFontNotFoundException.o OMTextLayout.o OMSurface.o OMBufferSurface.o OMNativeSurface.o
+
+%.o : %.m
+	gcc -c $^ -o $@ `objfw-config --cppflags --objcflags` `pkg-config --cflags gtk+-2.0`
+
+clean :
+	rm -f *.o
+	rm -f *.a
+	rm -f *.so
+	rm -f *.bin
+
