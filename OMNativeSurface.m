@@ -1,7 +1,7 @@
 //==================================================================================================================================
 // OMNativeSurface.m
 /*==================================================================================================================================
-Copyright � 2012 Dillon Aumiller <dillonaumiller@gmail.com>
+Copyright © 2012 Dillon Aumiller <dillonaumiller@gmail.com>
 
 This file is part of the atropine library.
 
@@ -35,8 +35,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //==================================================================================================================================
 @implementation OMNativeSurface
 //----------------------------------------------------------------------------------------------------------------------------------
-@synthesize nativeDataA = _nativeDataA;
-@synthesize nativeDataB = _nativeDataB;
+@synthesize nativeData = _nativeData;
 //----------------------------------------------------------------------------------------------------------------------------------
 + nativeSurfaceWithData:(void *)data
 {
@@ -53,19 +52,18 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 {
   self = [super init];
   #ifdef _WIN32
-    _nativeDataA = data;
+    _nativeData = data;
     HWND hwnd = (HWND)data;
     RECT clientRect;
     GetClientRect(hwnd, &clientRect);
     _width  = (float)(clientRect.right  - clientRect.left);
     _height = (float)(clientRect.bottom - clientRect.top );
     HDC hdc = GetDC(hwnd);
-    //cairo_surface_t *surf = cairo_win32_surface_create(hdc);
-    //_surfaceData = (void *)cairo_create(surf);
-    //cairo_surface_destroy(surf);
-    _nativeDataB = (void *)hdc;
+    cairo_surface_t *surf = cairo_win32_surface_create(hdc);
+    _surfaceData = (void *)cairo_create(surf);
+    cairo_surface_destroy(surf);
   #elif defined __APPLE__
-    _nativeDataA = data;
+    _nativeData = data;
     NSView *view = (NSView *)data;
     NSRect bounds = [view bounds];
     _width  = (float)bounds.size.width;
@@ -79,7 +77,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
     _surfaceData = (void *)cairo_create(surf);
     cairo_surface_destroy(surf);
   #elif defined __linux__
-    _nativeDataA = data;
+    _nativeData = data;
     int iWidth, iHeight;
     GtkWidget *gwdg = (GtkWidget *)data;
     GtkWindow *gwnd = (GtkWindow *)gtk_widget_get_parent(gwdg);
@@ -94,27 +92,24 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 - (void)nativeRelease
 {
   #ifdef _WIN32
-    MessageBoxA(NULL,"Test 0","Test",0);
-    if(_nativeDataA != NULL)
+    if(_nativeData != NULL)
     {
-      //HDC hdc = cairo_win32_surface_get_dc(cairo_get_target(CONTEXT));
-      //cairo_destroy(CONTEXT);
-      ReleaseDC((HWND)_nativeDataA, (HDC)_nativeDataB);
-      _nativeDataA = NULL;
-      MessageBoxA(NULL,"Test 1","Test",0);
+      HDC hdc = cairo_win32_surface_get_dc(cairo_get_target(CONTEXT));
+      cairo_destroy(CONTEXT);
+      ReleaseDC((HWND)_nativeData, hdc);
+      _nativeData = NULL;
     }
   #elif defined __APPLE__
     cairo_destroy(CONTEXT);
-    _nativeDataA = NULL;
+    _nativeData = NULL;
   #elif defined __linux__
     cairo_destroy(CONTEXT);
-    _nativeData[0[]] = NULL;
+    _nativeData = NULL;
   #endif
 }
 //----------------------------------------------------------------------------------------------------------------------------------
 -(void)dealloc
 {
-  MessageBoxA(NULL,"Test 2","Test",0);
   [self nativeRelease];
 }
 //----------------------------------------------------------------------------------------------------------------------------------

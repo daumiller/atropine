@@ -22,12 +22,10 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 @interface OMNativeSurface : OMSurface
 {
   @protected
-    void *_nativeDataA;  //extra data for native implementation [0]
-    void *_nativeDataB;  //extra data for native implementation [0]
+    void *_nativeData;  //extra data for native implementation
 }
 //----------------------------------------------------------------------------------------------------------------------------------
-@property (readonly) void *nativeDataA;
-@property (readonly) void *nativeDataB;
+@property (readonly) void *nativeData;
 //----------------------------------------------------------------------------------------------------------------------------------
 + nativeSurfaceWithData:(void *)data;
 - initWithData:(void *)data;

@@ -17,10 +17,13 @@ OMBufferSurface *buff;
 //==================================================================================================================================
 int main(int argc, char **argv)
 {
-  _WinInit();
-  _WinCreate();
-  BufferInit();
-  _WinLoop();
+  @autoreleasepool
+  {
+    _WinInit();
+    _WinCreate();
+    BufferInit();
+    _WinLoop();
+  }
 }
 //==================================================================================================================================
 void roundedRectangle(OMSurface *surface, OMDimension dimension, float radius)
@@ -190,7 +193,7 @@ void _WinPaint(HWND hwnd)
   {
     //blit buffer
     OMNativeSurface *winSurf = [OMNativeSurface nativeSurfaceWithData:hwnd];
-    //[buff copyToSurface:winSurf DestinationX:0.0f DestinationY:0.0f];
+    [buff copyToSurface:winSurf DestinationX:0.0f DestinationY:0.0f];
   }
 }
 //==================================================================================================================================

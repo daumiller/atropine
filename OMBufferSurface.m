@@ -72,9 +72,11 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 - initWithPNG:(OFString *)Filename
 {
   self = [super init];
-  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init]; //collect our "[Filename UTF8String]" container object
-  cairo_surface_t *cairoSurf = cairo_image_surface_create_from_png((const char *)[Filename UTF8String]);
-  [pool drain];
+  cairo_surface_t *cairoSurf = NULL;
+  @autoreleasepool  //collect our "[Filename UTF8String]" container object
+  {
+    cairoSurf = cairo_image_surface_create_from_png((const char *)[Filename UTF8String]);
+  }
   cairo_status_t readStatus = cairo_surface_status(cairoSurf);
   if((readStatus == CAIRO_STATUS_FILE_NOT_FOUND) || (readStatus == CAIRO_STATUS_NO_MEMORY) || (readStatus == CAIRO_STATUS_READ_ERROR))
     @throw [[OFReadFailedException alloc] init];
@@ -197,9 +199,11 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //----------------------------------------------------------------------------------------------------------------------------------
 - (void)writeToPNG:(OFString *)Filename
 {
-  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init]; //collect "[Filename UTF8String]" container object
-  cairo_status_t writeStatus = cairo_surface_write_to_png(cairo_get_target(CONTEXT), [Filename UTF8String]);
-  [pool drain];
+  cairo_status_t writeStatus;
+  @autoreleasepool  //collect "[Filename UTF8String]" container object
+  {
+    writeStatus = cairo_surface_write_to_png(cairo_get_target(CONTEXT), [Filename UTF8String]);
+  }
   if(writeStatus != CAIRO_STATUS_SUCCESS)
     @throw [[OFWriteFailedException alloc] init];
 }

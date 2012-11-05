@@ -67,53 +67,51 @@ void roundedRectangle(OMSurface *surface, OMDimension dimension, float radius)
 void BufferInit()
 {
   //init
-  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
-  
-  //create buffer
-  buff = [[OMBufferSurface alloc] initWithWidth:32 Height:32]; //hang on to this guy for the life of our program (not autorelease)
-  [buff resizeWidth:640 Height:480];
-  
-  //create some colors
-  OMColor black = OMMakeColorRGBA(0.0f, 0.0f, 0.0f, 1.0f);
-  OMColor white = OMMakeColorRGBA(1.0f, 1.0f, 1.0f, 1.0f);
-  OMColor blue  = OMMakeColorRGBA(0.0f, 0.0f, 1.0f, 1.0f);
-  
-  //clear-to-color
-  [buff setColor:white];
-  [buff paint];
-  
-  //add rounded-rectangle path
-  roundedRectangle(buff, OMMakeDimension(OMMakeCoordinate(32.0f, 32.0f), OMMakeSize(256.0f, 256.0f)), 16.0f);
-  
-  //fill rounded-rectangle path
-  [buff setColor:blue];
-  [buff fillPreserve];
-  
-  //stroke rounded-rectangle path
-  buff.lineWidth = 5.0f;
-  [buff setColor:black];
-  [buff stroke];
-  
-  //create a text layout
-  OMFont *font = [OMFont fontWithFamily:@"segoe ui"];
-  font.weight  = OMFONT_WEIGHT_BOLD;
-  font.size    = 20.0f;
-  
-  //create text layout, create path on surface
-  OMTextLayout *layout = [OMTextLayout layoutWithSurface:buff Text:@"Hello アトロピン!" Font:font];
-  [layout pathToSurface:buff X:96.0f Y:164.0f];
-  
-  //stroke/fill text layout path
-  [buff setColor:black];
-  [buff strokePreserve];
-  [buff setColor:OMMakeColorRGB(0.2f, 1.0f, 0.4f)];
-  [buff fill];
-  
-  //test writing support
-  [buff writeToPNG:@"buffTest.png"];
-  
-  //cleanup
-  [pool drain];
+  @autoreleasepool
+  {
+    //create buffer
+    buff = [[OMBufferSurface alloc] initWithWidth:32 Height:32]; //hang on to this guy for the life of our program (not autorelease)
+    [buff resizeWidth:640 Height:480];
+    
+    //create some colors
+    OMColor black = OMMakeColorRGBA(0.0f, 0.0f, 0.0f, 1.0f);
+    OMColor white = OMMakeColorRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+    OMColor blue  = OMMakeColorRGBA(0.0f, 0.0f, 1.0f, 1.0f);
+    
+    //clear-to-color
+    [buff setColor:white];
+    [buff paint];
+    
+    //add rounded-rectangle path
+    roundedRectangle(buff, OMMakeDimension(OMMakeCoordinate(32.0f, 32.0f), OMMakeSize(256.0f, 256.0f)), 16.0f);
+    
+    //fill rounded-rectangle path
+    [buff setColor:blue];
+    [buff fillPreserve];
+    
+    //stroke rounded-rectangle path
+    buff.lineWidth = 5.0f;
+    [buff setColor:black];
+    [buff stroke];
+    
+    //create a text layout
+    OMFont *font = [OMFont fontWithFamily:@"segoe ui"];
+    font.weight  = OMFONT_WEIGHT_BOLD;
+    font.size    = 20.0f;
+    
+    //create text layout, create path on surface
+    OMTextLayout *layout = [OMTextLayout layoutWithSurface:buff Text:@"Hello アトロピン!" Font:font];
+    [layout pathToSurface:buff X:96.0f Y:164.0f];
+    
+    //stroke/fill text layout path
+    [buff setColor:black];
+    [buff strokePreserve];
+    [buff setColor:OMMakeColorRGB(0.2f, 1.0f, 0.4f)];
+    [buff fill];
+    
+    //test writing support
+    [buff writeToPNG:@"buffTest.png"];
+  }
 }
 //==================================================================================================================================
 void _LinInit()
@@ -147,15 +145,12 @@ void _LinLoop()
 //==================================================================================================================================
 void _LinPaint(GtkWidget *widget)
 {
-  //init
-  OFAutoreleasePool *ofPool  = [[OFAutoreleasePool alloc] init];
-  OMNativeSurface   *linSurf = [OMNativeSurface nativeSurfaceWithData:(void *)widget];
-  
-  //blit buffer
-  [buff copyToSurface:linSurf DestinationX:0.0f DestinationY:0.0f];
-  
-  //clean up
-  [ofPool drain];
+  @autoreleasepool
+  {
+    OMNativeSurface   *linSurf = [OMNativeSurface nativeSurfaceWithData:(void *)widget];
+    
+    //blit buffer
+    [buff copyToSurface:linSurf DestinationX:0.0f DestinationY:0.0f];
+  }
 }
 //==================================================================================================================================
-

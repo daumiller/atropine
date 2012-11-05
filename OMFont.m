@@ -79,9 +79,8 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 {
   self = [super init];
   PangoFontDescription *pfd = pango_font_description_new();
-  @autoreleasepool
+  @autoreleasepool  //"[family UTF8String]" allocs a new AR object to hold data
   {
-    //"[family UTF8String]" allocs a new AR object to hold data
     pango_font_description_set_family(pfd, [family UTF8String]);
   }
   _fontData = (void *)pfd;
@@ -91,9 +90,8 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 - initWithDescription:(OFString *)description
 {
   self = [super init];
-  @autoreleasepool
+  @autoreleasepool  //"[description UTF8String]" allocs a new AR object to hold data
   {
-    //"[description UTF8String]" allocs a new AR object to hold data
     _fontData = (void *)pango_font_description_from_string([description UTF8String]);
   }
   return self;
@@ -128,8 +126,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
   int i, familyCount = 0;
   pango_context_list_families(ctx, &families, &familyCount);
   
-  //make sure we clean up all the "comparer" strings we create here...
-  @autoreleasepool
+  @autoreleasepool  //make sure we clean up all the "comparer" strings we create here...
   {
     for(i=0; i<familyCount; i++)
     {
@@ -189,9 +186,8 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //----------------------------------------------------------------------------------------------------------------------------------
 - (void)setFamily : (OFString *)inFamily
 {
-  @autoreleasepool
+  @autoreleasepool  //free "[inFamily UTF8String]" container object
   {
-    //free "[inFamily UTF8String]" container object
     pango_font_description_set_family(PFDESCRIPTION, [inFamily UTF8String]);
   }
 }
