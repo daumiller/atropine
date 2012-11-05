@@ -21,11 +21,11 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //==================================================================================================================================
 @interface OMFontNotFoundException : OFException
 {
-  @protected OFString *fontName;
+  @protected OFString *_fontName;
 }
 //----------------------------------------------------------------------------------------------------------------------------------
-+ exceptionWithClass:(Class)class_ fontName:(OFString *)fontName_;
-- initWithClass:(Class)class_ fontName:(OFString *)fontName_;
++ exceptionWithClass:(Class)exClass fontName:(OFString *)fontName;
+- initWithClass:(Class)exClass fontName:(OFString *)fontName;
 //----------------------------------------------------------------------------------------------------------------------------------
 - (OFString *)fontName;
 //----------------------------------------------------------------------------------------------------------------------------------

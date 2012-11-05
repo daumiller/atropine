@@ -42,7 +42,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //----------------------------------------------------------------------------------------------------------------------------------
 - copy
 {
-  OMBufferSurface *surf = [OMBufferSurface bufferSurfaceWithWidth:(float)_width Height:(float)_height];
+  OMBufferSurface *surf = [[OMBufferSurface alloc] initWithWidth:(float)_width Height:(float)_height];
   [self copyToSurface:surf DestinationX:0.0f DestinationY:0.0f];
   return surf;
 }

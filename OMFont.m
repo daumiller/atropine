@@ -64,7 +64,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
   char *descr = pango_font_description_to_string(PFDESCRIPTION);
   PangoFontDescription *newData = pango_font_description_from_string(descr);
   g_free(descr);
-  return [OMFont fontWithFontData:(void *)newData];
+  return [[OMFont alloc] initWithFontData:(void *)newData];
 }
 //----------------------------------------------------------------------------------------------------------------------------------
 - init

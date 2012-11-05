@@ -21,21 +21,21 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //==================================================================================================================================
 @implementation OMFontNotFoundException
 //----------------------------------------------------------------------------------------------------------------------------------
-+ exceptionWithClass:(Class)class_ fontName:(OFString *)fontName_
++ exceptionWithClass:(Class)exClass fontName:(OFString *)fontName
 {
-  return [[self alloc] initWithClass:class_ fontName:fontName_];
+  return [[self alloc] initWithClass:exClass fontName:fontName];
 }
 //----------------------------------------------------------------------------------------------------------------------------------
-- initWithClass:(Class)class_ fontName:(OFString *)fontName_
+- initWithClass:(Class)exClass fontName:(OFString *)fontName
 {
-  self = [super initWithClass: class_];
-  fontName = [fontName_ copy];
+  self = [super initWithClass: exClass];
+  _fontName = [fontName copy];
   return self;
 }
 //----------------------------------------------------------------------------------------------------------------------------------
 - (OFString *)fontName
 {
-  return fontName;
+  return _fontName;
 }
 //----------------------------------------------------------------------------------------------------------------------------------
 - (OFString *)description

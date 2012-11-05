@@ -179,8 +179,8 @@ void _MacPaint(NSView *view)
 {
   @autoreleasepool
   {
-    OMNativeSurface   *macSurf = [OMNativeSurface nativeSurfaceWithData:(void *)view];
     //blit buffer
+    OMNativeSurface   *macSurf = [[OMNativeSurface alloc] initWithData:(void *)view];
     [buff copyToSurface:macSurf DestinationX:0.0f DestinationY:0.0f];
   }
 }

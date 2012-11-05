@@ -32,9 +32,10 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //----------------------------------------------------------------------------------------------------------------------------------
 - (void)setText:(OFString *)inText
 {
-  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
-  pango_layout_set_text(LAYOUT, [inText UTF8String], -1);
-  [pool drain];
+  @autoreleasepool //[OFString UTF8String]'s alloc'd data is autoreleased along with the instance it came from
+  {
+    pango_layout_set_text(LAYOUT, [inText UTF8String], -1);
+  }
 }
 - (OFString *)text                 { return [OFString stringWithUTF8String:pango_layout_get_text(LAYOUT)]; /*owned/free()d by the layout*/ }
 //----------------------------------------------------------------------------------------------------------------------------------
@@ -224,26 +225,27 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //==================================================================================================================================
 - (void)setTextAsMarkup:(OFString *)Markup
 {
-  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init]; //collect "[Markup UTF8String]" container object
-  pango_layout_set_markup(LAYOUT, [Markup UTF8String], -1);
-  [pool drain];
+  @autoreleasepool //collect "[Markup UTF8String]" container object
+  {
+    pango_layout_set_markup(LAYOUT, [Markup UTF8String], -1);
+  }
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 - (void)setTextAsMarkup:(OFString *)Markup Accelerator:(OFString *)Accelerator
 {
-  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init]; //another couple [STRING UTF8String]s...
-  glong readBytes, wroteChars;
-  gunichar *tmp = g_utf8_to_ucs4([Accelerator UTF8String], 4, &readBytes, &wroteChars, NULL);
-  if((tmp == NULL) || (wroteChars == 0))
+  @autoreleasepool //another couple [STRING UTF8String]s...
   {
-    //error occured, or empty string given; revert to non-accelerator version
-    [self setTextAsMarkup:Markup];
-    [pool drain];
-    return;
+    glong readBytes, wroteChars;
+    gunichar *tmp = g_utf8_to_ucs4([Accelerator UTF8String], 4, &readBytes, &wroteChars, NULL);
+    if((tmp == NULL) || (wroteChars == 0))
+    {
+      //error occured, or empty string given; revert to non-accelerator version
+      [self setTextAsMarkup:Markup];
+      return;
+    }
+    pango_layout_set_markup_with_accel(LAYOUT, [Markup UTF8String], -1, tmp[0], NULL);
+    g_free(tmp);
   }
-  pango_layout_set_markup_with_accel(LAYOUT, [Markup UTF8String], -1, tmp[0], NULL);
-  g_free(tmp);
-  [pool drain];
 }
 //==================================================================================================================================
 - (void)pathToSurface:(OMSurface *)Surface

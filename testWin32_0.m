@@ -192,8 +192,9 @@ void _WinPaint(HWND hwnd)
   @autoreleasepool
   {
     //blit buffer
-    OMNativeSurface *winSurf = [OMNativeSurface nativeSurfaceWithData:hwnd];
+    OMNativeSurface *winSurf = [[OMNativeSurface alloc] initWithData:hwnd];
     [buff copyToSurface:winSurf DestinationX:0.0f DestinationY:0.0f];
+    //i don't believe this pool will actually have anything in it to drain (yay!), but it's still here.
   }
 }
 //==================================================================================================================================
