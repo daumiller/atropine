@@ -8,4 +8,6 @@
 *.so
 *.so.*
 *.png
+*.app
+*.app/*
 Makefile
