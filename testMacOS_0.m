@@ -1,9 +1,10 @@
 //==================================================================================================================================
 #import <Cocoa/Cocoa.h>
 #import "atropine.h"
+#include <stdio.h>
 //==================================================================================================================================
 void _MacInit();
-void _MacCreate();
+void  _MacCreate();
 void _MacLoop();
 void _MacPaint(NSView *view);
 void BufferInit();
@@ -14,7 +15,7 @@ void BufferInit();
 - (void) drawRect:(NSRect)frame { _MacPaint(self); }
 @end
 //----------------------------------------------------------------------------------------------------------------------------------
-@interface atropineDelegate : NSObject
+@interface atropineDelegate : NSObject <NSWindowDelegate>
 @end
 @implementation atropineDelegate
 - (void) windowWillClose:(NSNotification *)notification { [NSApp terminate:self]; }
@@ -28,10 +29,12 @@ OMBufferSurface *buff;
 //==================================================================================================================================
 int main(int argc, char **argv)
 {
-  _MacInit();
-  _MacCreate();
-  BufferInit();
-  _MacLoop();
+  @autoreleasepool
+  {
+    _MacInit();
+    BufferInit();
+    _MacCreate();
+  }
 }
 //==================================================================================================================================
 void roundedRectangle(OMSurface *surface, OMDimension dimension, float radius)
@@ -116,13 +119,14 @@ void BufferInit()
     [buff fill];
     
     //test writing support
-    [buff writeToPNG:@"buffTest.png"];
+    //[buff writeToPNG:@"buffTest.png"]; <-- this doesn't like to work while inside a bundle / launched from GUI
   }
 }
 //==================================================================================================================================
 void _MacInit()
 {
-  NSApp = [NSApplication sharedApplication];
+  [NSApplication sharedApplication];
+  [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
 }
 //----------------------------------------------------------------------------------------------------------------------------------
 void _MacCreate()
@@ -137,11 +141,11 @@ void _MacCreate()
   //menu
   //some of these NS* UI Items won't accept OFStrings as replacements for NSStrings
   //so we have to explicitly create them as NSStrings (without @"literals")
-  NSString *str0 = [NSString stringWithUTF8String:""                ];
-  NSString *str1 = [NSString stringWithUTF8String:"Quit testMacOS_0"];
-  NSString *str2 = [NSString stringWithUTF8String:"q"               ];
-  NSString *str3 = [NSString stringWithUTF8String:"Apple"           ];
-  NSString *str4 = [NSString stringWithUTF8String:"atropine Test"   ];
+  NSString *str0 = [NSString stringWithUTF8String:""              ];
+  NSString *str1 = [NSString stringWithUTF8String:"Quit OS X Test"];
+  NSString *str2 = [NSString stringWithUTF8String:"q"             ];
+  NSString *str3 = [NSString stringWithUTF8String:"Apple"         ];
+  NSString *str4 = [NSString stringWithUTF8String:"atropine Test" ];
   
   [NSApp setMainMenu:[[NSMenu alloc] init]];
   mnu = [[NSMenu alloc] initWithTitle:str0];
@@ -167,12 +171,12 @@ void _MacCreate()
   [wnd makeKeyAndOrderFront:wnd];
   [NSApp activateIgnoringOtherApps:YES];
   [vew setNeedsDisplay:YES]; //need an initial redraw here (for whatever reason???)
+  [NSApp run];
 }
 //----------------------------------------------------------------------------------------------------------------------------------
 void _MacLoop()
 {
-  [NSApp run];
-  [NSApp release];
+  return;
 }
 //==================================================================================================================================
 void _MacPaint(NSView *view)
