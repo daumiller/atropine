@@ -40,11 +40,11 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 + nativeSurfaceWithData:(void *)data
 {
   #ifdef _WIN32
-    return [[self alloc] initWithData:data];
+    return [[[self alloc] initWithData:data] autorelease];
   #elif defined __APPLE__
-    return [(OMNativeSurface *)[self alloc] initWithData:data];
+    return [[(OMNativeSurface *)[self alloc] initWithData:data] autorelease];
   #elif defined __linux__
-    return [[self alloc] initWithData:data];
+    return [[[self alloc] initWithData:data] autorelease];
   #endif
 }
 //----------------------------------------------------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
     cairo_surface_destroy(surf);
   #elif defined __APPLE__
     _nativeData = data;
-    NSView *view = (__bridge NSView *)data;
+    NSView *view = (NSView *)data;
     NSRect bounds = [view bounds];
     _width  = (float)bounds.size.width;
     _height = (float)bounds.size.height;
@@ -111,6 +111,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 -(void)dealloc
 {
   [self nativeRelease];
+  [super dealloc];
 }
 //----------------------------------------------------------------------------------------------------------------------------------
 @end

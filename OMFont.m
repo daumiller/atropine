@@ -41,22 +41,22 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //----------------------------------------------------------------------------------------------------------------------------------
 + font
 {
-  return [[self alloc] init];
+  return [[[self alloc] init] autorelease];
 }
 //----------------------------------------------------------------------------------------------------------------------------------
 + fontWithFamily:(OFString *)family
 {
-  return [[self alloc] initWithFamily:family];
+  return [[[self alloc] initWithFamily:family] autorelease];
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 + fontWithDescription:(OFString *)description
 {
-  return [[self alloc] initWithDescription:description];
+  return [[[self alloc] initWithDescription:description] autorelease];
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 + fontWithFontData:(void *)FontData
 {
-  return [[self alloc] initWithFontData:FontData];
+  return [[[self alloc] initWithFontData:FontData] autorelease];
 }
 //----------------------------------------------------------------------------------------------------------------------------------
 - copy
@@ -79,10 +79,9 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 {
   self = [super init];
   PangoFontDescription *pfd = pango_font_description_new();
-  @autoreleasepool  //"[family UTF8String]" allocs a new AR object to hold data
-  {
-    pango_font_description_set_family(pfd, [family UTF8String]);
-  }
+  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init]; //"[family UTF8String]" allocs a new AR object to hold data
+  pango_font_description_set_family(pfd, [family UTF8String]);
+  [pool drain];
   _fontData = (void *)pfd;
   return self;
 }
@@ -90,10 +89,9 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 - initWithDescription:(OFString *)description
 {
   self = [super init];
-  @autoreleasepool  //"[description UTF8String]" allocs a new AR object to hold data
-  {
-    _fontData = (void *)pango_font_description_from_string([description UTF8String]);
-  }
+  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init]; //"[description UTF8String]" allocs a new AR object to hold data
+  _fontData = (void *)pango_font_description_from_string([description UTF8String]);
+  [pool drain];
   return self;
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -108,6 +106,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 {
   if(_fontData != NULL)
     pango_font_description_free(PFDESCRIPTION);
+  [super dealloc];
 }
 //----------------------------------------------------------------------------------------------------------------------------------
 + (BOOL)isFamilyMonospaced:(OFString *)familyName
@@ -126,20 +125,20 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
   int i, familyCount = 0;
   pango_context_list_families(ctx, &families, &familyCount);
   
-  @autoreleasepool  //make sure we clean up all the "comparer" strings we create here...
+  //make sure we clean up all the "comparer" strings we create here...
+  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
+  for(i=0; i<familyCount; i++)
   {
-    for(i=0; i<familyCount; i++)
+    //result of pango_font_family_get_name(family) is owned/cleaned by specified family
+    OFString *comparer = [OFString stringWithUTF8String:pango_font_family_get_name(families[i])];
+    if([familyName caseInsensitiveCompare:comparer] == OF_ORDERED_SAME)
     {
-      //result of pango_font_family_get_name(family) is owned/cleaned by specified family
-      OFString *comparer = [OFString stringWithUTF8String:pango_font_family_get_name(families[i])];
-      if([familyName caseInsensitiveCompare:comparer] == OF_ORDERED_SAME)
-      {
-        hit = YES;
-        ret = pango_font_family_is_monospace(families[i]);
-        break;
-      }
+      hit = YES;
+      ret = pango_font_family_is_monospace(families[i]);
+      break;
     }
   }
+  [pool drain];
   
   //can't find anything about if we should be free()ing each element in families array or not...
   //maybe they're statically owned & cleaned by the context?
@@ -186,10 +185,9 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //----------------------------------------------------------------------------------------------------------------------------------
 - (void)setFamily : (OFString *)inFamily
 {
-  @autoreleasepool  //free "[inFamily UTF8String]" container object
-  {
-    pango_font_description_set_family(PFDESCRIPTION, [inFamily UTF8String]);
-  }
+  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init]; //free "[inFamily UTF8String]" container object
+  pango_font_description_set_family(PFDESCRIPTION, [inFamily UTF8String]);
+  [pool drain];
 }
 - (OFString *)family                     { return [OFString stringWithUTF8String:pango_font_description_get_family(PFDESCRIPTION)]; /*does Not need free()d*/ }
 //----------------------------------------------------------------------------------------------------------------------------------
@@ -211,8 +209,9 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 - (BOOL)isValid      { return (_fontData != NULL); }
 - (BOOL)isMonospaced
 {
-  BOOL result;
-  @autoreleasepool { result = [OMFont isFamilyMonospaced:self.family]; }
+  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
+  BOOL result = [OMFont isFamilyMonospaced:self.family];
+  [pool drain];
   return result;
 }
 //----------------------------------------------------------------------------------------------------------------------------------

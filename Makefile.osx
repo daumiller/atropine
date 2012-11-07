@@ -17,7 +17,7 @@ libatropine.dylib : objects
 objects : OMColor.o OMCoordinate.o OMRectangle.o OMFont.o OMFontNotFoundException.o OMTextLayout.o OMSurface.o OMBufferSurface.o OMNativeSurface.o
 
 %.o : %.m
-	clang -c $^ -o $@ `objfw-config --cppflags --objcflags --arc` -I/Users/dillon/Development/builds/cairo/_bin/include -I/Users/dillon/Development/builds/cairo/_bin/include/cairo
+	clang -c $^ -o $@ `objfw-config --cppflags --objcflags` -I/Users/dillon/Development/builds/cairo/_bin/include -I/Users/dillon/Development/builds/cairo/_bin/include/cairo
 
 clean :
 	rm -f *.o

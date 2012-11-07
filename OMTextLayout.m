@@ -32,10 +32,10 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //----------------------------------------------------------------------------------------------------------------------------------
 - (void)setText:(OFString *)inText
 {
-  @autoreleasepool //[OFString UTF8String]'s alloc'd data is autoreleased along with the instance it came from
-  {
-    pango_layout_set_text(LAYOUT, [inText UTF8String], -1);
-  }
+  //[OFString UTF8String]'s alloc'd data is autoreleased along with the instance it came from
+  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
+  pango_layout_set_text(LAYOUT, [inText UTF8String], -1);
+  [pool drain];
 }
 - (OFString *)text                 { return [OFString stringWithUTF8String:pango_layout_get_text(LAYOUT)]; /*owned/free()d by the layout*/ }
 //----------------------------------------------------------------------------------------------------------------------------------
@@ -111,42 +111,42 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //==================================================================================================================================
 + layoutWithSurface:(OMSurface *)Surface
 {
-  return [[self alloc] initWithSurface:Surface];
+  return [[[self alloc] initWithSurface:Surface] autorelease];
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 + layoutWithSurface:(OMSurface *)Surface Text:(OFString *)Text
 {
-  return [[self alloc] initWithSurface:Surface Text:Text];
+  return [[[self alloc] initWithSurface:Surface Text:Text] autorelease];
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 + layoutWithSurface:(OMSurface *)Surface Text:(OFString *)Text Font:(OMFont *)Font
 {
-  return [[self alloc] initWithSurface:Surface Text:Text Font:Font];
+  return [[[self alloc] initWithSurface:Surface Text:Text Font:Font] autorelease];
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 + layoutWithSurface:(OMSurface *)Surface Text:(OFString *)Text Font:(OMFont *)Font WrapSize:(OMSize)WrapSize
 {
-  return [[self alloc] initWithSurface:Surface Text:Text Font:Font WrapSize:WrapSize];
+  return [[[self alloc] initWithSurface:Surface Text:Text Font:Font WrapSize:WrapSize] autorelease];
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 + layoutWithSurface:(OMSurface *)Surface Markup:(OFString *)Markup
 {
-  return [[self alloc] initWithSurface:Surface Markup:Markup];
+  return [[[self alloc] initWithSurface:Surface Markup:Markup] autorelease];
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 +layoutWithSurface:(OMSurface *)Surface Markup:(OFString *)Markup Accelerator:(OFString *)Accelerator
 {
-  return [[self alloc] initWithSurface:Surface Markup:Markup Accelerator:Accelerator];
+  return [[[self alloc] initWithSurface:Surface Markup:Markup Accelerator:Accelerator] autorelease];
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 + layoutWithSurface:(OMSurface *)Surface Markup:(OFString *)Markup WrapSize:(OMSize)WrapSize
 {
-  return [[self alloc] initWithSurface:Surface Markup:Markup WrapSize:WrapSize];
+  return [[[self alloc] initWithSurface:Surface Markup:Markup WrapSize:WrapSize] autorelease];
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 + layoutWithSurface:(OMSurface *)Surface Markup:(OFString *)Markup Accelerator:(OFString *)Accelerator WrapSize:(OMSize)WrapSize
 {
-  return [[self alloc] initWithSurface:Surface Markup:Markup Accelerator:Accelerator WrapSize:WrapSize];
+  return [[[self alloc] initWithSurface:Surface Markup:Markup Accelerator:Accelerator WrapSize:WrapSize] autorelease];
 }
 //==================================================================================================================================
 - initWithSurface:(OMSurface *)Surface
@@ -221,31 +221,31 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 {
   if(_layoutData != NULL)
     g_object_unref(_layoutData);
+  [super dealloc];
 }
 //==================================================================================================================================
 - (void)setTextAsMarkup:(OFString *)Markup
 {
-  @autoreleasepool //collect "[Markup UTF8String]" container object
-  {
-    pango_layout_set_markup(LAYOUT, [Markup UTF8String], -1);
-  }
+  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init]; //collect "[Markup UTF8String]" container object
+  pango_layout_set_markup(LAYOUT, [Markup UTF8String], -1);
+  [pool drain];
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 - (void)setTextAsMarkup:(OFString *)Markup Accelerator:(OFString *)Accelerator
 {
-  @autoreleasepool //another couple [STRING UTF8String]s...
+  OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init]; //another couple [STRING UTF8String]s...
+  glong readBytes, wroteChars;
+  gunichar *tmp = g_utf8_to_ucs4([Accelerator UTF8String], 4, &readBytes, &wroteChars, NULL);
+  if((tmp == NULL) || (wroteChars == 0))
   {
-    glong readBytes, wroteChars;
-    gunichar *tmp = g_utf8_to_ucs4([Accelerator UTF8String], 4, &readBytes, &wroteChars, NULL);
-    if((tmp == NULL) || (wroteChars == 0))
-    {
-      //error occured, or empty string given; revert to non-accelerator version
-      [self setTextAsMarkup:Markup];
-      return;
-    }
-    pango_layout_set_markup_with_accel(LAYOUT, [Markup UTF8String], -1, tmp[0], NULL);
-    g_free(tmp);
+    //error occured, or empty string given; revert to non-accelerator version
+    [self setTextAsMarkup:Markup];
+    [pool drain];
+    return;
   }
+  pango_layout_set_markup_with_accel(LAYOUT, [Markup UTF8String], -1, tmp[0], NULL);
+  g_free(tmp);
+  [pool drain];
 }
 //==================================================================================================================================
 - (void)pathToSurface:(OMSurface *)Surface

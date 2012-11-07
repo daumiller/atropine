@@ -11,7 +11,7 @@ atropine.dll : objects
 objects : OMColor.o OMCoordinate.o OMRectangle.o OMFont.o OMFontNotFoundException.o OMTextLayout.o OMSurface.o OMBufferSurface.o OMNativeSurface.o
 
 %.o : %.m
-	clang -c $^ -o $@ `objfw-config --cppflags --objcflags --arc` `pkg-config --cflags gtk+-2.0`
+	clang -c $^ -o $@ `objfw-config --cppflags --objcflags` `pkg-config --cflags gtk+-2.0`
 
 clean :
 	rm -f *.o

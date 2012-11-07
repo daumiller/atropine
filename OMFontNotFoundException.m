@@ -23,7 +23,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //----------------------------------------------------------------------------------------------------------------------------------
 + exceptionWithClass:(Class)exClass fontName:(OFString *)fontName
 {
-  return [[self alloc] initWithClass:exClass fontName:fontName];
+  return [[[self alloc] initWithClass:exClass fontName:fontName] autorelease];
 }
 //----------------------------------------------------------------------------------------------------------------------------------
 - initWithClass:(Class)exClass fontName:(OFString *)fontName
