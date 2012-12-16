@@ -8,7 +8,7 @@ void _LinLoop();
 void _LinPaint(GtkWidget *widget);
 void BufferInit();
 //==================================================================================================================================
-void atropineExpose(GtkWidget *widget, GdkEventExpose *event)
+void atropineDraw(GtkWidget *widget, cairo_t *cr, gpointer data)
 {
   _LinPaint(widget);
 }
@@ -130,10 +130,10 @@ void _LinCreate()
   gtk_window_set_title(window, "atropine test");
   gtk_window_resize(window, 640, 480);
   gtk_window_set_position(window, GTK_WIN_POS_CENTER);
-  gtk_signal_connect(GTK_OBJECT(window), "destroy", GTK_SIGNAL_FUNC(atropineDestroy), NULL);
+  g_signal_connect(window, "destroy", G_CALLBACK(atropineDestroy), NULL);
   
   drawer = gtk_drawing_area_new();
-  gtk_signal_connect(GTK_OBJECT(drawer), "expose-event", GTK_SIGNAL_FUNC(atropineExpose), NULL);
+  g_signal_connect(drawer, "draw", G_CALLBACK(atropineExpose), NULL);
   gtk_container_add((GtkContainer *)window, drawer);
   gtk_widget_show(drawer);
 }

@@ -84,7 +84,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
     gtk_window_get_size(gwnd, &iWidth, &iHeight);
     _width  = (float)iWidth;
     _height = (float)iHeight;
-    _surfaceData = (void *)gdk_cairo_create(gwdg->window);
+    _surfaceData = (void *)gdk_cairo_create(gtk_widget_get_parent_window(gwdg));
   #endif
   return self;
 }
