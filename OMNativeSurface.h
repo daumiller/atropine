@@ -27,8 +27,8 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //----------------------------------------------------------------------------------------------------------------------------------
 @property (readonly) void *nativeData;
 //----------------------------------------------------------------------------------------------------------------------------------
-+ nativeSurfaceWithData:(void *)data;
-- initWithData:(void *)data;
++ nativeSurfaceWithData:(void *)data width:(float)width height:(float)height;
+- initWithData:(void *)data width:(float)width height:(float)height;
 - (void)nativeRelease;
 //----------------------------------------------------------------------------------------------------------------------------------
 @end
