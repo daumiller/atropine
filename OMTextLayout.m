@@ -277,7 +277,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 - (void)pathToSurface:(OMSurface *)Surface Dimension:(OMDimension)Dimension
 {
   //TODO: need to test this! not sure if it's correct...
-  [Surface rectangleFromDimension:Dimension];
+  [Surface dimension:Dimension];
   [Surface clip];
   [Surface moveToX:Dimension.origin.x Y:Dimension.origin.y];
   pango_cairo_layout_path(CONTEXT, LAYOUT);

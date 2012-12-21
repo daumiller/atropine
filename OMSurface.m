@@ -140,19 +140,19 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
                            (double)(Rectangle.bottomRight.y - Rectangle.topLeft.y));
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-- (void)rectangleFromDimension:(OMDimension)Dimension
-{
-  cairo_rectangle(CONTEXT, (double)Dimension.origin.x, (double)Dimension.origin.y, (double)Dimension.size.width, (double)Dimension.size.height);
-}
-//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 - (void)rectangleLeft:(float)Left Top:(float)Top Right:(float)Right Bottom:(float)Bottom
 {
   cairo_rectangle(CONTEXT, (double)Left, (double)Top, (double)(Right-Left), (double)(Bottom-Top));
 }
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-- (void)rectangleLeft:(float)Left Top:(float)Top Width:(float)Width Height:(float)Height
+- (void)dimension:(OMDimension)Dimension
 {
-  cairo_rectangle(CONTEXT, (double)Left, (double)Top, (double)Width, (double)Height);
+  cairo_rectangle(CONTEXT, (double)Dimension.origin.x, (double)Dimension.origin.y, (double)Dimension.size.width, (double)Dimension.size.height);
+}
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- (void)dimensionX:(float)X Y:(float)Y Width:(float)Width Height:(float)Height
+{
+  cairo_rectangle(CONTEXT, (double)X, (double)Y, (double)Width, (double)Height);
 }
 //==================================================================================================================================
 - (void)arcCenter:(OMCoordinate)Center Radius:(float)Radius DegreeStart:(float)DegreeStart DegreeEnd:(float)DegreeEnd
@@ -174,6 +174,33 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 {
   cairo_arc(CONTEXT, (double)CenterX, (double)CenterY, (double)Radius, (double)RadianStart, (double)RadianEnd);
 }
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- (void)roundedDimension:(OMDimension)Dimension withRadius:(float)Radius
+{
+  [self newSubPath];
+  [self arcCenterX: Dimension.origin.x + Dimension.size.width  - Radius
+           CenterY: Dimension.origin.y +                         Radius
+            Radius: Radius
+       DegreeStart: -90.0f
+         DegreeEnd:   0.0f];
+  [self arcCenterX: Dimension.origin.x + Dimension.size.width  - Radius
+           CenterY: Dimension.origin.y + Dimension.size.height - Radius
+            Radius: Radius
+       DegreeStart:   0.0f
+         DegreeEnd:  90.0f];
+  [self arcCenterX: Dimension.origin.x +                         Radius
+           CenterY: Dimension.origin.y + Dimension.size.height - Radius
+            Radius: Radius
+       DegreeStart:  90.0f
+         DegreeEnd: 180.0f];
+  [self arcCenterX: Dimension.origin.x +                         Radius
+           CenterY: Dimension.origin.y +                         Radius
+            Radius: Radius
+       DegreeStart: 180.0f
+         DegreeEnd: 270.0f];
+  [self closePath];
+}
+
 //==================================================================================================================================
 @end
 //==================================================================================================================================

@@ -133,14 +133,17 @@ typedef enum
 - (void)curveControlAX:(float)ControlAX ControlAY:(float)ControlAY ControlBX:(float)ControlBX ControlBY:(float)ControlBY EndAtX:(float)EndAtX EndAtY:(float)EndAtY;
 //----------------------------------------------------------------------------------------------------------------------------------
 - (void)rectangle:(OMRectangle)Rectangle;
-- (void)rectangleFromDimension:(OMDimension)Dimension;
 - (void)rectangleLeft:(float)Left Top:(float)Top Right:(float)Right Bottom:(float)Bottom;
-- (void)rectangleLeft:(float)Left Top:(float)Top Width:(float)Width Height:(float)Height;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+- (void)dimension:(OMDimension)Dimension;
+- (void)dimensionX:(float)X Y:(float)Y Width:(float)Width Height:(float)Height;
 //----------------------------------------------------------------------------------------------------------------------------------
 - (void)arcCenter:(OMCoordinate)Center Radius:(float)Radius DegreeStart:(float)DegreeStart DegreeEnd:(float)DegreeEnd;
 - (void)arcCenterX:(float)CenterX CenterY:(float)CenterY Radius:(float)Radius DegreeStart:(float)DegreeStart DegreeEnd:(float)DegreeEnd;
 - (void)arcCenter:(OMCoordinate)Center Radius:(float)Radius RadianStart:(float)RadianStart RadianEnd:(float)RadianEnd;
 - (void)arcCenterX:(float)CenterX CenterY:(float)CenterY Radius:(float)Radius RadianStart:(float)RadianStart RadianEnd:(float)RadianEnd;
 //----------------------------------------------------------------------------------------------------------------------------------
+- (void)roundedDimension:(OMDimension)Dimension withRadius:(float)Radius;
+
 @end
 //==================================================================================================================================
