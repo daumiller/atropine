@@ -25,6 +25,23 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //==================================================================================================================================
 @implementation OMSurface
 //==================================================================================================================================
++ surfaceWithCairoContext:(void *)cairoContext width:(float)width height:(float)height
+{
+  return [[[self alloc] initWithCairoContext:cairoContext width:width height:height] autorelease];
+}
+//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- initWithCairoContext:(void *)cairoContext width:(float)width height:(float)height
+{
+  self = [super init];
+  if(self)
+  {
+    _surfaceData = cairoContext;
+    _width       = width;
+    _height      = height;
+  }
+  return self;
+}
+//----------------------------------------------------------------------------------------------------------------------------------
 @synthesize width       = _width;
 @synthesize height      = _height;
 @synthesize surfaceData = _surfaceData;
@@ -110,11 +127,11 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 - (void)strokePreserve              { cairo_stroke_preserve(CONTEXT);                 }
 - (void)fill                        { cairo_fill(CONTEXT);                            }
 - (void)fillPreserve                { cairo_fill_preserve(CONTEXT);                   }
-- (void)fillWithColor:(OMColor)color
+- (void)clearToColor:(OMColor)color
 {
   cairo_set_source_rgb(CONTEXT, color.r, color.g, color.b);
   cairo_rectangle(CONTEXT, 0.0f, 0.0f, (float)_width, (float)_height);
-  cairo_paint(CONTEXT);
+  cairo_fill(CONTEXT);
 }
 //==================================================================================================================================
 - (void)lineTo:(OMCoordinate)Coordinate { cairo_line_to(CONTEXT, (double)Coordinate.x, (double)Coordinate.y);   }

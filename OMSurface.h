@@ -96,6 +96,10 @@ typedef enum
 @property (assign)   OMSurfaceLineJoint lineJoint;
 @property (assign)   OMSurfaceAntiAlias antiAlias;
 //----------------------------------------------------------------------------------------------------------------------------------
+//NOTE: when creating an OMSurface with an existing Cairo context, the context is NOT cleaned/freed by the OMSurface
++ surfaceWithCairoContext:(void *)cairoContext width:(float)width height:(float)height;
+- initWithCairoContext:(void *)cairoContext width:(float)width height:(float)height;
+//----------------------------------------------------------------------------------------------------------------------------------
 - (void)contextReset;
 - (void)contextPush;
 - (void)contextPop;
@@ -121,7 +125,7 @@ typedef enum
 - (void)strokePreserve;
 - (void)fill;
 - (void)fillPreserve;
-- (void)fillWithColor:(OMColor)color;
+- (void)clearToColor:(OMColor)color;
 //----------------------------------------------------------------------------------------------------------------------------------
 - (void)moveTo:(OMCoordinate)Coordinate;
 - (void)moveToX:(float)X Y:(float)Y;

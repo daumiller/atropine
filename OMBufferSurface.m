@@ -27,7 +27,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 //----------------------------------------------------------------------------------------------------------------------------------
 + bufferSurfaceWithSize:(OMSize)Size
 {
-  return [[[self alloc] initWithOMSize:Size] autorelease];
+  return [[(OMBufferSurface *)[self alloc] initWithSize:Size] autorelease];
 }
 //----------------------------------------------------------------------------------------------------------------------------------
 + bufferSurfaceWithWidth:(int)Width Height:(int)Height
@@ -47,7 +47,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
   return surf;
 }
 //----------------------------------------------------------------------------------------------------------------------------------
-- initWithOMSize:(OMSize)Size
+- initWithSize:(OMSize)Size
 {
   self   = [super init];
   _width  = Size.width;

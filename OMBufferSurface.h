@@ -29,7 +29,7 @@ along with atropine.  If not, see <http://www.gnu.org/licenses/>.
 + bufferSurfaceWithPNG:(OFString *)Filename;
 - copy;
 - initWithWidth:(int)Width Height:(int)Height;
-- initWithOMSize:(OMSize)Size;
+- initWithSize:(OMSize)Size;
 - initWithPNG:(OFString *)Filename;
 - (void)bufferRelease;
 //----------------------------------------------------------------------------------------------------------------------------------
