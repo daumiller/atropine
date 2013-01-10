@@ -5,6 +5,10 @@ windows : win
 mac     : osx
 macosx  : osx
 
+# ----- static -----
+static : objects
+	ar rcs libatropine.a *.o
+
 # ----- linux -----
 lin : libatropine.so
 
