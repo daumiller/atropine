@@ -16,10 +16,10 @@ libatropine.so : objects
 	clang -shared *.o -o libatropine.so `objfw-config --libs` `pkg-config --libs gdk-3.0 pango`
 
 # ----- windows -----
-win : atropine.dll
+win : libatropine.dll
 
-atropine.dll : objects
-	clang -shared *.o -o atropine.dll `objfw-config --libs` `pkg-config --libs gdk-3.0 pango`
+libatropine.dll : objects
+	clang -shared *.o -o libatropine.dll `objfw-config --libs` `pkg-config --libs gdk-3.0 pango`
 
 # ----- os x -----
 osx : libatropine.dylib
